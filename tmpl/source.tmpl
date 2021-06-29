@@ -8,18 +8,25 @@
     </tr>
 
     {{- range .Lines }}
+    {{- $covClass := "" -}}
+    {{- if .UnexecedBlock -}}
+      {{- $covClass = "uncoveredLine" -}}
+    {{- else -}}
+      {{- $covClass = "coveredLine" -}}
+    {{- end -}}
+
     <tr class="source-line">
       <td class="lineno"><a id="l{{ .LineNumber }}" href="#l{{ .LineNumber }}">{{ .LineNumber }}</a></td>
       <td class="linebranch">
       </td>
-      <td class="linecount uncoveredLine">
+      <td class="linecount {{ $covClass }}">
         {{- if .UnexecedBlock -}}
           &cross;
         {{- else -}}
           {{ .Count }}
         {{- end -}}
       </td>
-      <td class="src {{ if .UnexecedBlock }}uncoveredLine{{ else }}coveredLine{{ end }}">{{ .SourceCode }}</td>
+      <td class="src {{ $covClass }}">{{ .SourceCode }}</td>
     </tr>
     {{- end -}}
 
