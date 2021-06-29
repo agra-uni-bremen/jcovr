@@ -1,0 +1,24 @@
+<div class="file-source">
+  <table>
+    <tr>
+      <th align="right">Line</th>
+      <th align="right">Branch</th>
+      <th align="right">Exec</th>
+      <th align="left">Source</th>
+    </tr>
+
+    {{- $lines := (getLines .SourceCode) -}}
+    {{- range $i, $line := $lines }}
+    {{- $i = increment $i }}
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l{{ $i }}" href="#l{{ $i }}">{{ $i }}</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linecount uncoveredLine">&cross;</td>
+      <td class="src uncoveredLine">{{ $line }}</td>
+    </tr>
+    {{- end -}}
+
+  </table>
+</div>

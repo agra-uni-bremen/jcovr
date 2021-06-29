@@ -1,0 +1,59 @@
+:root {
+    font-family: sans-serif;
+    --unknown_color: LightGray;
+    --low_color: #FF6666;
+    --medium_color: #F9FD63;
+    --high_color: #85E485;
+    --covered_color: #85E485;
+    --uncovered_color: #FF8C8C;
+    --takenBranch_color: Green;
+    --notTakenBranch_color: Red;
+}
+
+body
+{
+    color: #000000;
+    background-color: #FFFFFF;
+}
+
+h1
+{
+    text-align: center;
+    margin: 0;
+    padding-bottom: 10px;
+    font-size: 20pt;
+    font-weight: bold;
+}
+
+hr
+{
+    background-color: navy;
+    height: 2px;
+    border: 0;
+}
+
+/* Link formats: use maroon w/underlines */
+a:link
+{
+    color: navy;
+    text-decoration: underline;
+}
+a:visited
+{
+    color: maroon;
+    text-decoration: underline;
+}
+
+{{ template "summary.tmpl" }}
+
+{{ template "meter.tmpl" }}
+
+{{ template "filelist.tmpl" }}
+
+{{ template "details.tmpl" }}
+
+footer
+{
+    text-align: center;
+    padding-top: 3px;
+}
