@@ -63,7 +63,7 @@ func main() {
 
 	flag.Parse()
 	if flag.NArg() < 1 {
-		os.Exit(1)
+		log.Fatal("Missing GCOV JSON file argument")
 	}
 	files := flag.Args()
 
