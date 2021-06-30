@@ -43,6 +43,7 @@ type GcovLine struct {
 
 	// Not available in JSON, added separatly.
 	SourceCode string
+	NoCode     bool
 }
 
 type GcovBranch struct {
@@ -106,6 +107,7 @@ func (g *Gcov) addLines() error {
 				UnexecedBlock: false,
 				FuncName:      "", // XXX
 				SourceCode:    code,
+				NoCode:        true,
 			})
 
 		nextLine:

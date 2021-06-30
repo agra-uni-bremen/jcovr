@@ -20,10 +20,14 @@
       <td class="linebranch">
       </td>
       <td class="linecount {{ $covClass }}">
-        {{- if .UnexecedBlock -}}
-          &cross;
+        {{- if .NoCode -}}
+          &mdash;
         {{- else -}}
-          {{ .Count }}
+          {{- if .UnexecedBlock -}}
+            &cross;
+          {{- else -}}
+            {{ .Count }}
+          {{- end -}}
         {{- end -}}
       </td>
       <td class="src {{ $covClass }}">{{ .SourceCode }}</td>
