@@ -1,22 +1,25 @@
 package main
 
 import (
+	"bufio"
 	"compress/gzip"
 	"encoding/json"
 	"os"
+	"path/filepath"
+	"sort"
 )
 
 type Gcov struct {
 	CWD      string      `json:"current_working_directory"`
 	DataFile string      `json:"data_file"`
 	Version  string      `json:"format_version"`
-	Files    []GcovFiles `json:"files"`
+	Files    []*GcovFile `json:"files"`
 }
 
-type GcovFiles struct {
-	Name  string     `json:"file"`
-	Funcs []GcovFunc `json:"functions"`
-	Lines []GcovLine `json:"lines"`
+type GcovFile struct {
+	Name  string      `json:"file"`
+	Funcs []*GcovFunc `json:"functions"`
+	Lines []*GcovLine `json:"lines"`
 }
 
 type GcovFunc struct {
@@ -32,11 +35,14 @@ type GcovFunc struct {
 }
 
 type GcovLine struct {
-	Branches      []GcovBranch `json:"branches"`
-	Count         uint         `json:"count"`
-	LineNumber    uint         `json:"line_number"`
-	UnexecedBlock bool         `json:"unexecuted_block"`
-	FuncName      string       `json:"function_name"`
+	Branches      []*GcovBranch `json:"branches"`
+	Count         uint          `json:"count"`
+	LineNumber    uint          `json:"line_number"`
+	UnexecedBlock bool          `json:"unexecuted_block"`
+	FuncName      string        `json:"function_name"`
+
+	// Not available in JSON, added separatly.
+	SourceCode string
 }
 
 type GcovBranch struct {
@@ -65,5 +71,56 @@ func OpenGcov(fp string) (*Gcov, error) {
 		return nil, err
 	}
 
+	err = cov.addLines()
+	if err != nil {
+		return nil, err
+	}
+
 	return &cov, nil
+}
+
+func (g *Gcov) addLines() error {
+	for _, file := range g.Files {
+		cfp := filepath.Join(g.CWD, file.Name)
+		f, err := os.Open(cfp)
+		if err != nil {
+			return err
+		}
+
+		lnum := uint(1)
+		scanner := bufio.NewScanner(f)
+
+		for scanner.Scan() {
+			code := scanner.Text()
+			for _, line := range file.Lines {
+				if line.LineNumber == lnum {
+					line.SourceCode = code
+					goto nextLine
+				}
+			}
+
+			file.Lines = append(file.Lines, &GcovLine{
+				Branches:      []*GcovBranch{},
+				Count:         0,
+				LineNumber:    lnum,
+				UnexecedBlock: false,
+				FuncName:      "", // XXX
+				SourceCode:    code,
+			})
+
+		nextLine:
+			lnum++
+		}
+
+		// Make sure lines are sorted by line number
+		sort.Sort(byLine(file.Lines))
+
+		f.Close()
+		err = scanner.Err()
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
 }

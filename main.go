@@ -15,9 +15,9 @@ var (
 //go:embed tmpl
 var templates embed.FS
 
-type SourcePair struct {
-	Coverage   *Gcov
-	SourceCode string
+type CoveragePair struct {
+	Coverage *Gcov
+	File     *GcovFile
 }
 
 func createCSS(path string) error {
@@ -48,12 +48,6 @@ func buildHTML() (*template.Template, error) {
 
 	const name = "base.tmpl"
 	tmpl := template.New(name)
-
-	funcMap := template.FuncMap{
-		"increment": increment,
-		"getLines":  getLines,
-	}
-	tmpl = tmpl.Funcs(funcMap)
 
 	tmpl, err = tmpl.ParseFS(templates, "tmpl/*.tmpl")
 	if err != nil {
@@ -86,28 +80,18 @@ func main() {
 			log.Fatal(err)
 		}
 
-		if len(c.Files) != 1 {
-			panic("support for mutiple files not implemented yet")
-		}
-		f := c.Files[0]
+		for _, f := range c.Files {
+			fn := filepath.Base(f.Name) + ".html"
+			fp := filepath.Join(dest, fn)
+			file, err := os.Create(fp)
+			if err != nil {
+				log.Fatal(err)
+			}
 
-		fn := filepath.Base(f.Name) + ".html"
-		fp := filepath.Join(dest, fn)
-		file, err := os.Create(fp)
-		if err != nil {
-			log.Fatal(err)
-		}
-
-		cfp := filepath.Join(c.CWD, f.Name)
-		data, err := os.ReadFile(cfp)
-		if err != nil {
-			log.Fatal(err)
-		}
-
-		p := &SourcePair{Coverage: c, SourceCode: string(data)}
-		err = tmpl.Execute(file, p)
-		if err != nil {
-			log.Fatal(err)
+			err = tmpl.Execute(file, &CoveragePair{c, f})
+			if err != nil {
+				log.Fatal(err)
+			}
 		}
 	}
 }

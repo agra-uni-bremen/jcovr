@@ -7,16 +7,19 @@
       <th align="left">Source</th>
     </tr>
 
-    {{- $lines := (getLines .SourceCode) -}}
-    {{- range $i, $line := $lines }}
-    {{- $i = increment $i }}
-
+    {{- range .Lines }}
     <tr class="source-line">
-      <td class="lineno"><a id="l{{ $i }}" href="#l{{ $i }}">{{ $i }}</a></td>
+      <td class="lineno"><a id="l{{ .LineNumber }}" href="#l{{ .LineNumber }}">{{ .LineNumber }}</a></td>
       <td class="linebranch">
       </td>
-      <td class="linecount uncoveredLine">&cross;</td>
-      <td class="src uncoveredLine">{{ $line }}</td>
+      <td class="linecount uncoveredLine">
+        {{- if .UnexecedBlock -}}
+          &cross;
+        {{- else -}}
+          {{ .Count }}
+        {{- end -}}
+      </td>
+      <td class="src {{ if .UnexecedBlock }}uncoveredLine{{ else }}coveredLine{{ end }}">{{ .SourceCode }}</td>
     </tr>
     {{- end -}}
 
