@@ -41,6 +41,9 @@ type GcovLine struct {
 	UnexecedBlock bool          `json:"unexecuted_block"`
 	FuncName      string        `json:"function_name"`
 
+	// Extensions used only by symex-vp
+	Tainted bool `json:"symex/tainted_instr"`
+
 	// Not available in JSON, added separatly.
 	SourceCode string
 	NoCode     bool

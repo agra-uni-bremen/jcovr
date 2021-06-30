@@ -9,10 +9,14 @@
 
     {{- range .Lines }}
     {{- $covClass := "" -}}
-    {{- if .UnexecedBlock -}}
-      {{- $covClass = "uncoveredLine" -}}
+    {{- if .Tainted -}}
+      {{- $covClass = "taintedLine" -}}
     {{- else -}}
-      {{- $covClass = "coveredLine" -}}
+      {{- if .UnexecedBlock -}}
+        {{- $covClass = "uncoveredLine" -}}
+      {{- else -}}
+        {{- $covClass = "coveredLine" -}}
+      {{- end -}}
     {{- end -}}
 
     <tr class="source-line">
