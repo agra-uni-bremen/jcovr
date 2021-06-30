@@ -31,10 +31,12 @@
       {{- end -}}
     </tr>
     <tr>
-      <th scope="row">Branches:</th>
-      <td>0</td>
-      <td>0</td>
-      <td class="TODO">0%</td>
+      {{- with .File.SymbolicCoverage -}}
+        <th scope="row">Symbolic:</th>
+        <td>{{ .Exec }}</td>
+        <td>{{ .Total }}</td>
+        <td class="TODO">{{ printf "%.2f" .Percentage }}%</td>
+      {{- end -}}
     </tr>
   </table>
 </div>
