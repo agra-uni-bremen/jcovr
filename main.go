@@ -2,6 +2,7 @@ package main
 
 import (
 	"embed"
+	"flag"
 	"html/template"
 	"log"
 	"os"
@@ -9,7 +10,7 @@ import (
 )
 
 var (
-	dest = "./www"
+	dest = flag.String("d", "./www", "output directory for HTML files")
 )
 
 //go:embed tmpl
@@ -58,13 +59,18 @@ func buildHTML() (*template.Template, error) {
 }
 
 func main() {
+	flag.Parse()
+	if flag.NArg() < 1 {
+		os.Exit(1)
+	}
+
 	files := os.Args[1:]
 
-	err := os.MkdirAll(dest, 0755)
+	err := os.MkdirAll(*dest, 0755)
 	if err != nil {
 		log.Fatal(err)
 	}
-	err = createCSS(filepath.Join(dest, "style.css"))
+	err = createCSS(filepath.Join(*dest, "style.css"))
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -82,7 +88,7 @@ func main() {
 
 		for _, f := range c.Files {
 			fn := filepath.Base(f.Name) + ".html"
-			fp := filepath.Join(dest, fn)
+			fp := filepath.Join(*dest, fn)
 			file, err := os.Create(fp)
 			if err != nil {
 				log.Fatal(err)
