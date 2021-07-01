@@ -63,8 +63,7 @@ func main() {
 	if flag.NArg() < 1 {
 		os.Exit(1)
 	}
-
-	files := os.Args[1:]
+	files := flag.Args()
 
 	err := os.MkdirAll(*dest, 0755)
 	if err != nil {
