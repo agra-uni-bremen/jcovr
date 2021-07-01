@@ -16,12 +16,6 @@ type Gcov struct {
 	Files    []*GcovFile `json:"files"`
 }
 
-type GcovFile struct {
-	Name  string      `json:"file"`
-	Funcs []*GcovFunc `json:"functions"`
-	Lines []*GcovLine `json:"lines"`
-}
-
 type GcovFunc struct {
 	Blocks        uint   `json:"blocks"`
 	ExecedBlocks  uint   `json:"blocks_executed"`
