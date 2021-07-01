@@ -32,7 +32,7 @@
     </tr>
     <tr>
       {{- with .File.SymbolicCoverage -}}
-        <th scope="row">Symbolic:</th>
+        <th scope="row">Unconcretized:</th>
         <td>{{ .Exec }}</td>
         <td>{{ .Total }}</td>
         <td class="TODO">{{ printf "%.2f" .Percentage }}%</td>
