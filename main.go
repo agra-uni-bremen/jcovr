@@ -59,6 +59,8 @@ func buildHTML() (*template.Template, error) {
 }
 
 func main() {
+	log.SetFlags(log.Lshortfile)
+
 	flag.Parse()
 	if flag.NArg() < 1 {
 		os.Exit(1)
