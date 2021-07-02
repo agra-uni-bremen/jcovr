@@ -27,7 +27,7 @@
       </td>
       <td class="linecount {{ $covClass }}">
         {{- if not .NoCode -}}
-          {{- if .UnexecedBlock -}}
+          {{- if (eq .Count 0) -}}
             &cross;
           {{- else -}}
             {{ .Count }}
