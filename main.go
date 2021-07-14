@@ -16,10 +16,9 @@ var (
 //go:embed tmpl
 var templates embed.FS
 
-type Page struct {
-	Name     string
+type CoveragePair struct {
 	Coverage *Gcov
-	File     *GcovFile // May be nil
+	File     *GcovFile
 }
 
 func createCSS(path string) error {
@@ -45,33 +44,53 @@ func createCSS(path string) error {
 	return nil
 }
 
-func buildHTML() (*template.Template, error) {
-	var err error
-
-	const name = "base.tmpl"
-	tmpl := template.New(name)
-
-	tmpl, err = tmpl.ParseFS(templates, "tmpl/*.tmpl")
+func buildFiles(files []string) (*Gcov, error) {
+	tmpl := template.New("source.tmpl")
+	tmpl, err := tmpl.ParseFS(templates, "tmpl/source.tmpl")
 	if err != nil {
 		return nil, err
 	}
 
-	return tmpl, nil
+	var accCov Gcov
+	for _, file := range files {
+		c, err := OpenGcov(file)
+		if err != nil {
+			return nil, err
+		}
+		accCov.Files = append(accCov.Files, c.Files...)
+
+		for _, f := range c.Files {
+			fn := filepath.Base(f.Name) + ".html"
+			fp := filepath.Join(*dest, fn)
+			file, err := os.Create(fp)
+			if err != nil {
+				return nil, err
+			}
+
+			err = tmpl.Execute(file, &CoveragePair{c, f})
+			if err != nil {
+				return nil, err
+			}
+		}
+	}
+
+	return &accCov, nil
 }
 
-func buildIndex(tmpl *template.Template, path string, accCov *Gcov) error {
-	indexFile, err := os.Create(path)
+func buildIndex(accCov *Gcov) error {
+	tmpl := template.New("index.tmpl")
+	tmpl, err := tmpl.ParseFS(templates, "tmpl/index.tmpl")
 	if err != nil {
 		return err
 	}
 
-	indexPage := &Page{
-		Name: "index",
-		Coverage: accCov,
-		File: nil,
+	fp := filepath.Join(*dest, "index.html")
+	indexFile, err := os.Create(fp)
+	if err != nil {
+		return err
 	}
 
-	err = tmpl.Execute(indexFile, indexPage)
+	err = tmpl.Execute(indexFile, accCov)
 	if err != nil {
 		return err
 	}
@@ -97,42 +116,11 @@ func main() {
 		log.Fatal(err)
 	}
 
-	tmpl, err := buildHTML()
+	accCov, err := buildFiles(files)
 	if err != nil {
 		log.Fatal(err)
 	}
-
-	var accCov Gcov
-	for _, file := range files {
-		c, err := OpenGcov(file)
-		if err != nil {
-			log.Fatal(err)
-		}
-		accCov.Files = append(accCov.Files, c.Files...)
-
-		for _, f := range c.Files {
-			fn := filepath.Base(f.Name) + ".html"
-			fp := filepath.Join(*dest, fn)
-			file, err := os.Create(fp)
-			if err != nil {
-				log.Fatal(err)
-			}
-
-			p := &Page{
-				Name: "source",
-				Coverage: c,
-				File: f,
-			}
-
-			err = tmpl.Execute(file, p)
-			if err != nil {
-				log.Fatal(err)
-			}
-		}
-	}
-
-	fp := filepath.Join(*dest, "index.html")
-	err = buildIndex(tmpl, fp, &accCov)
+	err = buildIndex(accCov)
 	if err != nil {
 		log.Fatal(err)
 	}

@@ -1,42 +1,110 @@
-<div class="file-source">
-  <table>
-    <tr>
-      <th align="right">Line</th>
-      <th align="right">Branch</th>
-      <th align="right">Exec</th>
-      <th align="left">Source</th>
-    </tr>
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8"/>
+    <title>Coverage information</title>
 
-    {{- range .Lines }}
-    {{- $covClass := "" -}}
-    {{- if .UnexecedBlock -}}
-      {{- $covClass = "uncoveredLine" -}}
-    {{- else -}}
-      {{- $covClass = "coveredLine" -}}
-    {{- end -}}
-    {{- if .Tainted -}}
-      {{- $covClass = "taintedLine" -}}
-    {{- end -}}
-    {{- if .NoCode -}}
-      {{- $covClass = "nocodeLine" -}}
-    {{- end -}}
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <link rel="stylesheet" href="style.css">
+  </head>
 
-    <tr class="source-line">
-      <td class="lineno"><a id="l{{ .LineNumber }}" href="#l{{ .LineNumber }}">{{ .LineNumber }}</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linecount {{ $covClass }}">
-        {{- if not .NoCode -}}
-          {{- if (eq .Count 0) -}}
-            &cross;
-          {{- else -}}
-            {{ .Count }}
-          {{- end -}}
+  <body>
+    <h1>Coverage</h1>
+
+    <hr/>
+
+    <div class="summary">
+      <div>
+        <table class="legend">
+          <tr>
+            <th scope="row">Directory:</th>
+            <td>{{ .Coverage.CWD }}</td>
+          </tr>
+          <tr>
+            <th scope="row">File:</th>
+            <td>{{ .File.Name }}</td>
+          <tr>
+            <th scope="row">Date:</th>
+            <td>2021-06-30 12:24:59</td>
+          </tr>
+         </tr>
+        </table>
+      </div>
+
+      <div>
+        <table class="coverage">
+          <tr>
+            <th></th>
+            <th scope="col">Exec</th>
+            <th scope="col">Total</th>
+            <th scope="col">Coverage</th>
+          </tr>
+          <tr>
+            {{- with .File.LineCoverage -}}
+              <th scope="row">Lines:</th>
+              <td>{{ .Exec }}</td>
+              <td>{{ .Total }}</td>
+              <td class="TODO">{{ printf "%.2f" .Percentage }}%</td>
+            {{- end -}}
+          </tr>
+          <tr>
+            {{- with .File.SymbolicCoverage -}}
+              <th scope="row">Unconcretized:</th>
+              <td>{{ .Exec }}</td>
+              <td>{{ .Total }}</td>
+              <td class="TODO">{{ printf "%.2f" .Percentage }}%</td>
+            {{- end -}}
+          </tr>
+        </table>
+      </div>
+    </div>
+
+    <hr/>
+
+    {{- with .File -}}
+    <div class="file-source">
+      <table>
+        <tr>
+          <th align="right">Line</th>
+          <th align="right">Branch</th>
+          <th align="right">Exec</th>
+          <th align="left">Source</th>
+        </tr>
+
+        {{- range .Lines }}
+        {{- $covClass := "" -}}
+        {{- if .UnexecedBlock -}}
+          {{- $covClass = "uncoveredLine" -}}
+        {{- else -}}
+          {{- $covClass = "coveredLine" -}}
         {{- end -}}
-      </td>
-      <td class="src {{ $covClass }}">{{ .SourceCode }}</td>
-    </tr>
+        {{- if .Tainted -}}
+          {{- $covClass = "taintedLine" -}}
+        {{- end -}}
+        {{- if .NoCode -}}
+          {{- $covClass = "nocodeLine" -}}
+        {{- end -}}
+
+        <tr class="source-line">
+          <td class="lineno"><a id="l{{ .LineNumber }}" href="#l{{ .LineNumber }}">{{ .LineNumber }}</a></td>
+          <td class="linebranch">
+          </td>
+          <td class="linecount {{ $covClass }}">
+            {{- if not .NoCode -}}
+              {{- if (eq .Count 0) -}}
+                &cross;
+              {{- else -}}
+                {{ .Count }}
+              {{- end -}}
+            {{- end -}}
+          </td>
+          <td class="src {{ $covClass }}">{{ .SourceCode }}</td>
+        </tr>
+        {{- end -}}
+
+      </table>
+    </div>
     {{- end -}}
 
-  </table>
-</div>
+  </body>
+</html>

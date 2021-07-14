@@ -1,33 +1,51 @@
-<table class="file-list">
-  <col/>
-  <colgroup span="3"/>
-  <colgroup span="2"/>
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8"/>
+    <title>Coverage information</title>
 
-  <tr>
-    <th scope="col">File</th>
-    <th scope="colgroup" colspan=3>Lines</th>
-    <th scope="colgroup" colspan=2>Unconcretized</th>
-  </tr>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <link rel="stylesheet" href="style.css">
+  </head>
 
-  {{- range .Files -}}
+  <body>
+    <h1>Coverage</h1>
 
-  <tr>
-    <th scope="row">
-      {{ .Name }}
-    </th>
-    {{- with .LineCoverage -}}
-      {{- $p := (printf "%.2f" .Percentage) -}}
-      <td>
-        <meter class="coverage-low" min="0" max="100" value="{{ $p }}" title="{{ $p }}%">{{ $p }}</meter>
-      </td>
-      <td class="CoverValue line-coverage coverage-medium">{{ $p }}%</td>
-      <td class="CoverValue line-coverage coverage-medium">{{ .Exec }} / {{ .Total}}</td>
-    {{- end -}}
-    {{- with .SymbolicCoverage -}}
-      <td class="CoverValue branch-coverage coverage-medium">{{ printf "%.2f" .Percentage }}%</td>
-      <td class="CoverValue branch-coverage coverage-medium">{{ .Exec }} / {{ .Total}}</td>
-    {{- end -}}
-  </tr>
+    <hr/>
 
-  {{- end -}}
-</table>
+    <table class="file-list">
+      <col/>
+      <colgroup span="3"/>
+      <colgroup span="2"/>
+
+      <tr>
+        <th scope="col">File</th>
+        <th scope="colgroup" colspan=3>Lines</th>
+        <th scope="colgroup" colspan=2>Unconcretized</th>
+      </tr>
+
+      {{- range .Files -}}
+
+      <tr>
+        <th scope="row">
+          {{ .Name }}
+        </th>
+        {{- with .LineCoverage -}}
+          {{- $p := (printf "%.2f" .Percentage) -}}
+          <td>
+            <meter class="coverage-low" min="0" max="100" value="{{ $p }}" title="{{ $p }}%">{{ $p }}</meter>
+          </td>
+          <td class="CoverValue line-coverage coverage-medium">{{ $p }}%</td>
+          <td class="CoverValue line-coverage coverage-medium">{{ .Exec }} / {{ .Total}}</td>
+        {{- end -}}
+        {{- with .SymbolicCoverage -}}
+          <td class="CoverValue branch-coverage coverage-medium">{{ printf "%.2f" .Percentage }}%</td>
+          <td class="CoverValue branch-coverage coverage-medium">{{ .Exec }} / {{ .Total}}</td>
+        {{- end -}}
+      </tr>
+
+      {{- end -}}
+    </table>
+
+  </body>
+</html>
