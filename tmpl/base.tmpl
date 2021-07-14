@@ -14,13 +14,19 @@
 
     <hr/>
 
-    <div class="summary">
-    {{ template "summary.tmpl" . }}
-    </div>
+    {{- if (eq .Name "source") -}}
+      <div class="summary">
+        {{ template "summary.tmpl" . }}
+      </div>
+    {{- end -}}
 
     <hr/>
 
-    {{ template "source.tmpl" .File }}
+    {{- if (eq .Name "source") -}}
+      {{ template "source.tmpl" .File }}
+    {{- else -}}
+      {{ template "index.tmpl" .Coverage }}
+    {{- end -}}
 
     <hr/>
 

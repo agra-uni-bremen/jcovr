@@ -16,9 +16,10 @@ var (
 //go:embed tmpl
 var templates embed.FS
 
-type CoveragePair struct {
+type Page struct {
+	Name     string
 	Coverage *Gcov
-	File     *GcovFile
+	File     *GcovFile // May be nil
 }
 
 func createCSS(path string) error {
@@ -58,6 +59,26 @@ func buildHTML() (*template.Template, error) {
 	return tmpl, nil
 }
 
+func buildIndex(tmpl *template.Template, path string, accCov *Gcov) error {
+	indexFile, err := os.Create(path)
+	if err != nil {
+		return err
+	}
+
+	indexPage := &Page{
+		Name: "index",
+		Coverage: accCov,
+		File: nil,
+	}
+
+	err = tmpl.Execute(indexFile, indexPage)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func main() {
 	log.SetFlags(log.Lshortfile)
 
@@ -81,11 +102,13 @@ func main() {
 		log.Fatal(err)
 	}
 
+	var accCov Gcov
 	for _, file := range files {
 		c, err := OpenGcov(file)
 		if err != nil {
 			log.Fatal(err)
 		}
+		accCov.Files = append(accCov.Files, c.Files...)
 
 		for _, f := range c.Files {
 			fn := filepath.Base(f.Name) + ".html"
@@ -95,10 +118,22 @@ func main() {
 				log.Fatal(err)
 			}
 
-			err = tmpl.Execute(file, &CoveragePair{c, f})
+			p := &Page{
+				Name: "source",
+				Coverage: c,
+				File: f,
+			}
+
+			err = tmpl.Execute(file, p)
 			if err != nil {
 				log.Fatal(err)
 			}
 		}
+	}
+
+	fp := filepath.Join(*dest, "index.html")
+	err = buildIndex(tmpl, fp, &accCov)
+	if err != nil {
+		log.Fatal(err)
 	}
 }
