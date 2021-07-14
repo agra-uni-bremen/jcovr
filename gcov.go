@@ -123,3 +123,24 @@ func (g *Gcov) addLines() error {
 
 	return nil
 }
+
+func (g *Gcov) LineCoverage() Coverage {
+	var execLines uint
+	var totalLines uint
+
+	for _, file := range g.Files {
+		totalLines += uint(len(file.Lines))
+		for _, line := range file.Lines {
+			if !line.UnexecedBlock {
+				execLines++
+			}
+		}
+	}
+
+	p := float64(execLines) / float64(totalLines)
+	return Coverage{
+		Exec:       execLines,
+		Total:      totalLines,
+		Percentage: p * 100,
+	}
+}

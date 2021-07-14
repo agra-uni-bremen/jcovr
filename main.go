@@ -57,6 +57,8 @@ func buildFiles(files []string) (*Gcov, error) {
 		if err != nil {
 			return nil, err
 		}
+
+		accCov.CWD = c.CWD
 		accCov.Files = append(accCov.Files, c.Files...)
 
 		for _, f := range c.Files {
