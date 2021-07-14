@@ -47,6 +47,11 @@ func createCSS(path string) error {
 
 func buildFiles(files []string) (*Gcov, error) {
 	tmpl := template.New("source.tmpl")
+	funcMap := template.FuncMap{
+		"relIndex": relIndex,
+	}
+	tmpl = tmpl.Funcs(funcMap)
+
 	tmpl, err := tmpl.ParseFS(templates, "tmpl/source.tmpl")
 	if err != nil {
 		return nil, err
@@ -95,6 +100,11 @@ func buildFiles(files []string) (*Gcov, error) {
 
 func buildIndex(accCov *Gcov) error {
 	tmpl := template.New("index.tmpl")
+	funcMap := template.FuncMap{
+		"toSlash":      filepath.ToSlash,
+	}
+	tmpl = tmpl.Funcs(funcMap)
+
 	tmpl, err := tmpl.ParseFS(templates, "tmpl/index.tmpl")
 	if err != nil {
 		return err
