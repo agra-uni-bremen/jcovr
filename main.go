@@ -101,7 +101,7 @@ func buildFiles(files []string) (*Gcov, error) {
 func buildIndex(accCov *Gcov) error {
 	tmpl := template.New("index.tmpl")
 	funcMap := template.FuncMap{
-		"toSlash":      filepath.ToSlash,
+		"toSlash": filepath.ToSlash,
 	}
 	tmpl = tmpl.Funcs(funcMap)
 
