@@ -4,6 +4,8 @@ type GcovFile struct {
 	Name  string      `json:"file"`
 	Funcs []*GcovFunc `json:"functions"`
 	Lines []*GcovLine `json:"lines"`
+
+	Path  string
 }
 
 type Coverage struct {

@@ -64,7 +64,7 @@
 
       <tr>
         <th scope="row">
-          {{ .Name }}
+          <a href="{{ .Path }}">{{ .Path }}</a>
         </th>
         {{- with .LineCoverage -}}
           {{- $p := (printf "%.2f" .Percentage) -}}

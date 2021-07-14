@@ -10,7 +10,8 @@ import (
 )
 
 var (
-	dest = flag.String("d", "./www", "output directory for HTML files")
+	dest  = flag.String("d", "./www", "output directory for HTML files")
+	relfp = flag.String("r", "", "treat all paths relative to this directory")
 )
 
 //go:embed tmpl
@@ -52,19 +53,30 @@ func buildFiles(files []string) (*Gcov, error) {
 	}
 
 	var accCov Gcov
+	accCov.CWD = *relfp
+	if accCov.CWD == "" {
+		accCov.CWD = filepath.Dir(files[0])
+	}
+
 	for _, file := range files {
 		c, err := OpenGcov(file)
 		if err != nil {
 			return nil, err
 		}
 
-		accCov.CWD = c.CWD
-		accCov.Files = append(accCov.Files, c.Files...)
-
 		for _, f := range c.Files {
-			fn := filepath.Base(f.Name) + ".html"
-			fp := filepath.Join(*dest, fn)
-			file, err := os.Create(fp)
+			fp, err := filepath.Rel(accCov.CWD, filepath.Join(c.CWD, f.Name+".html"))
+			if err != nil {
+				return nil, err
+			}
+			f.Path = fp
+			destFp := filepath.Join(*dest, fp)
+
+			err = os.MkdirAll(filepath.Dir(destFp), 0755)
+			if err != nil {
+				log.Fatal(err)
+			}
+			file, err := os.Create(destFp)
 			if err != nil {
 				return nil, err
 			}
@@ -74,6 +86,8 @@ func buildFiles(files []string) (*Gcov, error) {
 				return nil, err
 			}
 		}
+
+		accCov.Files = append(accCov.Files, c.Files...)
 	}
 
 	return &accCov, nil
