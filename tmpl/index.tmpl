@@ -24,6 +24,10 @@
             <th scope="row">Date:</th>
             <td>2021-06-30 12:24:59</td>
           </tr>
+          <tr>
+            <th scope="row">Files:</th>
+            <td>{{ len .Files }}</td>
+          </tr>
         </table>
       </div>
 
@@ -38,6 +42,14 @@
           {{- with .LineCoverage -}}
             <tr>
               <th scope="row">Lines:</th>
+              <td>{{ .Exec }}</td>
+              <td>{{ .Total}}</td>
+              <td class="TODO">{{ printf "%.2f" .Percentage }}%</td>
+            </tr>
+          {{- end -}}
+          {{- with .SymbolicCoverage -}}
+            <tr>
+              <th scope="row">Unconcretized:</th>
               <td>{{ .Exec }}</td>
               <td>{{ .Total}}</td>
               <td class="TODO">{{ printf "%.2f" .Percentage }}%</td>

@@ -144,3 +144,26 @@ func (g *Gcov) LineCoverage() Coverage {
 		Percentage: p * 100,
 	}
 }
+
+func (g *Gcov) SymbolicCoverage() Coverage {
+	var taintLines uint
+	var totalLines uint
+
+	for _, file := range g.Files {
+		totalLines += uint(len(file.Lines))
+		for _, line := range file.Lines {
+			if line.Tainted {
+				taintLines++
+			}
+		}
+	}
+
+	symLines := totalLines - taintLines
+	p := float64(symLines) / float64(totalLines)
+
+	return Coverage{
+		Exec:       symLines,
+		Total:      totalLines,
+		Percentage: p * 100,
+	}
+}
