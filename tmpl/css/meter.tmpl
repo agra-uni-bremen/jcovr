@@ -34,20 +34,10 @@ meter::-webkit-meter-even-less-good-value
     border: solid 1px black;
 }
 
-meter.coverage-none::-webkit-meter-optimum-value,
-meter.coverage-low::-webkit-meter-optimum-value
+meter.coverage::-webkit-meter-optimum-value,
+meter.coverage::-webkit-meter-optimum-value
 {
-    background: var(--low_color);
-}
-
-meter.coverage-medium::-webkit-meter-optimum-value
-{
-    background: var(--medium_color);
-}
-
-meter.coverage-high::-webkit-meter-optimum-value
-{
-    background: var(--high_color);
+    background: var(--meter_color);
 }
 
 /* Mozilla */
@@ -65,20 +55,10 @@ meter:-moz-meter-sub-sub-optimum::-moz-meter-bar
     border: solid 1px black;
 }
 
-meter.coverage-none:-moz-meter-optimum::-moz-meter-bar,
-meter.coverage-low:-moz-meter-optimum::-moz-meter-bar
+meter.coverage:-moz-meter-optimum::-moz-meter-bar,
+meter.coverage:-moz-meter-optimum::-moz-meter-bar
 {
-    background: var(--low_color);
-}
-
-meter.coverage-medium:-moz-meter-optimum::-moz-meter-bar
-{
-    background: var(--medium_color);
-}
-
-meter.coverage-high:-moz-meter-optimum::-moz-meter-bar
-{
-    background: var(--high_color);
+    background: var(--meter_color);
 }
 
 /*** End of Meter formats ***/
