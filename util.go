@@ -3,6 +3,7 @@ package main
 import (
 	"os"
 	"strings"
+	"time"
 )
 
 func getRelPath(n int) string {
@@ -21,4 +22,8 @@ func getRelPath(n int) string {
 func relIndex(path string) string {
 	elems := strings.SplitN(path, string(os.PathSeparator), -1)
 	return getRelPath(len(elems) - 1)
+}
+
+func today() string {
+	return time.Now().Format(time.RFC822)
 }

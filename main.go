@@ -49,6 +49,7 @@ func buildFiles(files []string) (*Gcov, error) {
 	tmpl := template.New("source.tmpl")
 	funcMap := template.FuncMap{
 		"relIndex": relIndex,
+		"today":    today,
 	}
 	tmpl = tmpl.Funcs(funcMap)
 
@@ -102,6 +103,7 @@ func buildIndex(accCov *Gcov) error {
 	tmpl := template.New("index.tmpl")
 	funcMap := template.FuncMap{
 		"toSlash": filepath.ToSlash,
+		"today":   today,
 	}
 	tmpl = tmpl.Funcs(funcMap)
 
