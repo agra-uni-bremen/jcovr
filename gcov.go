@@ -129,7 +129,7 @@ func (g *Gcov) LineCoverage() Coverage {
 	var totalLines uint
 
 	for _, file := range g.Files {
-		totalLines += file.TotalCodeLines()
+		totalLines += uint(len(file.TotalCodeLines()))
 		for _, line := range file.Lines {
 			if !line.UnexecedBlock && !line.NoCode {
 				execLines++
@@ -150,7 +150,7 @@ func (g *Gcov) SymbolicCoverage() Coverage {
 	var totalLines uint
 
 	for _, file := range g.Files {
-		totalLines += file.TotalCodeLines()
+		totalLines += uint(len(file.TotalCodeLines()))
 		for _, line := range file.Lines {
 			if line.Tainted && !line.NoCode {
 				taintLines++

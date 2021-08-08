@@ -14,24 +14,32 @@ type Coverage struct {
 	Percentage float64
 }
 
-func (f *GcovFile) TotalCodeLines() uint {
+func (f *GcovFile) TotalCodeLines() []*GcovLine {
 	var totalCodeLines uint
 
+	codeLines := make([]*GcovLine, len(f.Lines))
 	for _, line := range f.Lines {
-		if !line.NoCode {
-			totalCodeLines++
+		if line.NoCode {
+			continue
 		}
+
+		codeLines[totalCodeLines] = line
+		totalCodeLines++
 	}
 
-	return totalCodeLines
+	// Shrink to appropriate size
+	codeLines = codeLines[0:totalCodeLines]
+
+	return codeLines
 }
 
 func (f *GcovFile) LineCoverage() Coverage {
-	var execLines uint
-	totalLines := f.TotalCodeLines()
+	codeLines := f.TotalCodeLines()
+	totalLines := uint(len(codeLines))
 
-	for _, line := range f.Lines {
-		if !line.UnexecedBlock && !line.NoCode {
+	var execLines uint
+	for _, line := range codeLines {
+		if !line.UnexecedBlock {
 			execLines++
 		}
 	}
@@ -45,11 +53,12 @@ func (f *GcovFile) LineCoverage() Coverage {
 }
 
 func (f *GcovFile) SymbolicCoverage() Coverage {
-	var taintLines uint
-	totalLines := f.TotalCodeLines()
+	codeLines := f.TotalCodeLines()
+	totalLines := uint(len(codeLines))
 
-	for _, line := range f.Lines {
-		if line.Tainted && !line.NoCode {
+	var taintLines uint
+	for _, line := range codeLines {
+		if line.Tainted {
 			taintLines++
 		}
 	}
