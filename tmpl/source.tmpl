@@ -67,7 +67,7 @@
       <table>
         <tr>
           <th align="right">Line</th>
-          <th align="right">Branch</th>
+          <th align="right">Class</th>
           <th align="right">Exec</th>
           <th align="left">Source</th>
         </tr>
@@ -88,7 +88,10 @@
 
         <tr class="source-line">
           <td class="lineno"><a id="l{{ .LineNumber }}" href="#l{{ .LineNumber }}">{{ .LineNumber }}</a></td>
-          <td class="linebranch">
+          <td class="lineclass">
+            {{- if .Symbolic -}}
+              S
+            {{- end -}}
           </td>
           <td class="linecount {{ $covClass }}">
             {{- if not .NoCode -}}
