@@ -107,7 +107,13 @@
               {{- end -}}
             {{- end -}}
           </td>
-          <td class="src {{ $covClass }}">{{ .SourceCode }}</td>
+          <td class="src {{ $covClass }}">
+            {{- if .InitConc -}}
+              <b>{{ .SourceCode }}</b>
+            {{- else -}}
+              {{ .SourceCode }}
+            {{- end -}}
+          </td>
         </tr>
         {{- end -}}
 

@@ -38,6 +38,7 @@ type GcovLine struct {
 	// Extensions used only by symex-vp
 	Tainted bool `json:"symex/tainted_once"`
 	Symbolic bool `json:"symex/symbolic_once"`
+	InitConc bool `json:"symex/initial_concretization"`
 
 	// Not available in JSON, added separatly.
 	SourceCode string
