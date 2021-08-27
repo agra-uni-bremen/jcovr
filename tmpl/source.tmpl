@@ -89,8 +89,13 @@
         <tr class="source-line">
           <td class="lineno"><a id="l{{ .LineNumber }}" href="#l{{ .LineNumber }}">{{ .LineNumber }}</a></td>
           <td class="lineclass">
-            {{- if .Symbolic -}}
-              S
+            {{- if not .UnexecedBlock -}}
+              {{- if .Symbolic -}}
+                S{{/* Executed at least once with a symbolic value */}}
+              {{- end -}}
+              {{- if .Tainted -}}
+                C{{/* Executed at least once with a concretized value */}}
+              {{- end -}}
             {{- end -}}
           </td>
           <td class="linecount {{ $covClass }}">
