@@ -36,7 +36,7 @@ type GcovLine struct {
 	FuncName      string        `json:"function_name"`
 
 	// Extensions used only by symex-vp
-	Tainted bool `json:"symex/tainted_instr"`
+	Tainted bool `json:"symex/tainted_once"`
 	Symbolic bool `json:"symex/symbolic_once"`
 
 	// Not available in JSON, added separatly.
