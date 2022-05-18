@@ -2,6 +2,8 @@
 
 Visualization tool for Concolic Line Coverage based on [gcovr HTML][gcovr github].
 
+Refer to the publication [*Towards Quantification and Visualization of the Effects of Concretization during Concolic Testing*](https://doi.org/10.1109/LES.2022.3171603) for more details.
+
 ![jcovr example visualization](https://gist.githubusercontent.com/nmeum/242363176978aefa9b1f1eb088e36160/raw/5005db78564212411b38360a0ad730c024deffd3/riot-coap-parser.svg)
 
 # Build
